@@ -104,7 +104,7 @@ export default function TextAudio({ sentences, hideText = false, showCounter = f
             </button>
           )}
           {voices.length === 0 && (
-            <span className="text-xs text-slate-400">Carregando vozes...</span>
+            <span className="text-xs text-slate-400">Voz padrão do sistema</span>
           )}
         </div>
 

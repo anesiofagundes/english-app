@@ -10,11 +10,14 @@ export function useSpeech() {
   useEffect(() => {
     const load = () => {
       const all = window.speechSynthesis.getVoices();
-      setVoices(all.filter((v) => v.lang.startsWith('en')));
+      if (all.length > 0) setVoices(all.filter((v) => v.lang.startsWith('en')));
     };
     load();
-    window.speechSynthesis.onvoiceschanged = load;
-    return () => { window.speechSynthesis.cancel(); };
+    window.speechSynthesis.addEventListener('voiceschanged', load);
+    return () => {
+      window.speechSynthesis.removeEventListener('voiceschanged', load);
+      window.speechSynthesis.cancel();
+    };
   }, []);
 
   const speak = useCallback((
