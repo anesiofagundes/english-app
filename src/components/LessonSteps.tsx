@@ -4,6 +4,7 @@ import { Text } from '@/types';
 import { useState, useCallback, useEffect } from 'react';
 import LineByLine from './LineByLine';
 import TextAudio from './TextAudio';
+import CelebrationOverlay from './CelebrationOverlay';
 
 const STEPS = [
   {
@@ -35,6 +36,7 @@ const STEPS = [
 export default function LessonSteps({ text }: { text: Text }) {
   const [step, setStep] = useState(1);
   const [completed, setCompleted] = useState<Set<number>>(new Set());
+  const [showCelebration, setShowCelebration] = useState(false);
 
   useEffect(() => {
     try {
@@ -70,7 +72,7 @@ export default function LessonSteps({ text }: { text: Text }) {
                   onClick={() => setStep(s.number)}
                   className={`w-10 h-10 rounded-full text-sm font-bold transition-colors flex items-center justify-center ${
                     step === s.number
-                      ? 'bg-cyan-500 text-white shadow-sm'
+                      ? 'bg-blue-500 text-white shadow-sm'
                       : s.number < step
                       ? 'bg-green-500 text-white'
                       : 'bg-slate-100 dark:bg-slate-700 text-slate-400 dark:text-slate-500'
@@ -86,7 +88,7 @@ export default function LessonSteps({ text }: { text: Text }) {
                 </button>
                 <span className={`text-xs mt-1 font-medium transition-colors ${
                   step === s.number
-                    ? 'text-cyan-600 dark:text-cyan-400'
+                    ? 'text-blue-600 dark:text-blue-400'
                     : s.number < step
                     ? 'text-green-500 dark:text-green-400'
                     : 'text-slate-400 dark:text-slate-500'
@@ -104,7 +106,7 @@ export default function LessonSteps({ text }: { text: Text }) {
         </div>
 
         <div className="mt-4 text-center">
-          <p className="text-xs font-bold text-cyan-600 dark:text-cyan-400 uppercase tracking-widest mb-1">
+          <p className="text-xs font-bold text-blue-600 dark:text-blue-400 uppercase tracking-widest mb-1">
             Passo {step} de 4
           </p>
           <h3 className="text-base font-bold text-slate-800 dark:text-slate-100">
@@ -128,13 +130,15 @@ export default function LessonSteps({ text }: { text: Text }) {
         />
       )}
       {step === 3 && <TextAudio key="step3" sentences={text.sentences} showCounter targetReps={5} />}
-      {step === 4 && <TextAudio key="step4" sentences={text.sentences} hideText showCounter targetReps={5} />}
+      {step === 4 && <TextAudio key="step4" sentences={text.sentences} hideText showCounter targetReps={5} onTargetReached={() => setShowCelebration(true)} />}
+
+      {showCelebration && <CelebrationOverlay />}
 
       {step < 4 && (
         <div className="px-4 pb-4 pt-2">
           <button
             onClick={() => setStep(step + 1)}
-            className="w-full py-3 rounded-xl text-sm font-semibold bg-cyan-500 text-white hover:bg-cyan-600 transition-colors flex items-center justify-center gap-2 shadow-sm"
+            className="w-full py-3 rounded-xl text-sm font-semibold bg-blue-500 text-white hover:bg-blue-600 transition-colors flex items-center justify-center gap-2 shadow-sm"
           >
             Próximo passo
             <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
