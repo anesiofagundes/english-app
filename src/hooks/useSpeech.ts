@@ -5,6 +5,7 @@ import { useState, useEffect, useCallback } from 'react';
 export function useSpeech() {
   const [voices, setVoices] = useState<SpeechSynthesisVoice[]>([]);
   const [speaking, setSpeaking] = useState(false);
+  const [paused, setPaused] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(-1);
 
   useEffect(() => {
@@ -27,6 +28,7 @@ export function useSpeech() {
     onEnd?: () => void
   ) => {
     window.speechSynthesis.cancel();
+    setPaused(false);
     const u = new SpeechSynthesisUtterance(text);
     u.lang = 'en-US';
     if (voice) u.voice = voice;
@@ -44,6 +46,7 @@ export function useSpeech() {
     onComplete?: () => void
   ) => {
     window.speechSynthesis.cancel();
+    setPaused(false);
     let index = 0;
 
     const next = () => {
@@ -70,8 +73,19 @@ export function useSpeech() {
   const stop = useCallback(() => {
     window.speechSynthesis.cancel();
     setSpeaking(false);
+    setPaused(false);
     setCurrentIndex(-1);
   }, []);
 
-  return { voices, speaking, currentIndex, speak, stop, speakSequence };
+  const pause = useCallback(() => {
+    window.speechSynthesis.pause();
+    setPaused(true);
+  }, []);
+
+  const resume = useCallback(() => {
+    window.speechSynthesis.resume();
+    setPaused(false);
+  }, []);
+
+  return { voices, speaking, paused, currentIndex, speak, stop, pause, resume, speakSequence };
 }
