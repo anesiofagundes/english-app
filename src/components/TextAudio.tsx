@@ -14,7 +14,7 @@ interface Props {
 const SPEEDS = [0.75, 1, 1.25] as const;
 
 export default function TextAudio({ sentences, hideText = false, showCounter = false, targetReps = 5 }: Props) {
-  const { voices, speaking, paused, speakSequence, pause, resume } = useSpeech();
+  const { voices, speaking, paused, speakSequence, stop, pause, resume } = useSpeech();
   const [selectedVoice, setSelectedVoice] = useState<SpeechSynthesisVoice | undefined>();
   const [rate, setRate] = useState<number>(1);
   const [activeSentence, setActiveSentence] = useState(-1);
@@ -32,6 +32,12 @@ export default function TextAudio({ sentences, hideText = false, showCounter = f
         if (showCounter) setReps((r) => r + 1);
       }
     );
+  };
+
+  const handleRestart = () => {
+    stop();
+    setActiveSentence(-1);
+    handlePlay();
   };
 
   return (
@@ -106,6 +112,19 @@ export default function TextAudio({ sentences, hideText = false, showCounter = f
                 <path d="M8 5v14l11-7z" />
               </svg>
               Continuar
+            </button>
+          )}
+          {speaking && (
+            <button
+              onClick={handleRestart}
+              className="flex items-center gap-1.5 px-4 py-2.5 rounded-xl bg-slate-700 dark:bg-slate-600 text-white text-sm font-semibold hover:bg-slate-800 dark:hover:bg-slate-500 transition-colors"
+              title="Recomeçar do início"
+            >
+              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+                <path d="M1 4v6h6" />
+                <path d="M3.51 15a9 9 0 1 0 .49-3.51" />
+              </svg>
+              Recomeçar
             </button>
           )}
           {voices.length === 0 && (
