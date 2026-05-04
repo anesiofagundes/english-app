@@ -14,7 +14,7 @@ interface Props {
 const SPEEDS = [0.75, 1, 1.25] as const;
 
 export default function TextAudio({ sentences, hideText = false, showCounter = false, targetReps = 5 }: Props) {
-  const { voices, speaking, speakSequence, stop } = useSpeech();
+  const { voices, speaking, paused, speakSequence, pause, resume } = useSpeech();
   const [selectedVoice, setSelectedVoice] = useState<SpeechSynthesisVoice | undefined>();
   const [rate, setRate] = useState<number>(1);
   const [activeSentence, setActiveSentence] = useState(-1);
@@ -32,11 +32,6 @@ export default function TextAudio({ sentences, hideText = false, showCounter = f
         if (showCounter) setReps((r) => r + 1);
       }
     );
-  };
-
-  const handleStop = () => {
-    stop();
-    setActiveSentence(-1);
   };
 
   return (
@@ -81,9 +76,19 @@ export default function TextAudio({ sentences, hideText = false, showCounter = f
         </div>
 
         <div className="flex items-center gap-3 pt-1">
-          {speaking ? (
+          {!speaking ? (
             <button
-              onClick={handleStop}
+              onClick={handlePlay}
+              className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-cyan-500 text-white text-sm font-semibold hover:bg-cyan-600 transition-colors"
+            >
+              <svg className="w-4 h-4 ml-0.5" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M8 5v14l11-7z" />
+              </svg>
+              {reps > 0 ? 'Ouvir novamente' : 'Ouvir texto'}
+            </button>
+          ) : !paused ? (
+            <button
+              onClick={pause}
               className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-slate-700 dark:bg-slate-600 text-white text-sm font-semibold hover:bg-slate-800 dark:hover:bg-slate-500 transition-colors"
             >
               <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
@@ -94,13 +99,13 @@ export default function TextAudio({ sentences, hideText = false, showCounter = f
             </button>
           ) : (
             <button
-              onClick={handlePlay}
+              onClick={resume}
               className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-cyan-500 text-white text-sm font-semibold hover:bg-cyan-600 transition-colors"
             >
               <svg className="w-4 h-4 ml-0.5" fill="currentColor" viewBox="0 0 24 24">
                 <path d="M8 5v14l11-7z" />
               </svg>
-              {reps > 0 ? 'Ouvir novamente' : 'Ouvir texto'}
+              Continuar
             </button>
           )}
           {voices.length === 0 && (
