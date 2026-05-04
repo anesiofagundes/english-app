@@ -80,7 +80,7 @@ export default function LineByLine({ sentences, completed, onToggle }: Props) {
               <p className="text-base font-medium text-slate-800 dark:text-slate-200 leading-relaxed">
                 {highlight(sentence.english, sentence.keyPhrases).map((seg, j) =>
                   seg.isKey ? (
-                    <span key={j} className="text-cyan-600 dark:text-cyan-400 font-semibold">{seg.text}</span>
+                    <span key={j} className="text-blue-600 dark:text-blue-400 font-semibold">{seg.text}</span>
                   ) : (
                     <span key={j}>{seg.text}</span>
                   )
@@ -132,8 +132,8 @@ export default function LineByLine({ sentences, completed, onToggle }: Props) {
                 onClick={() => handlePlay(sentence, i)}
                 className={`w-11 h-11 rounded-full flex items-center justify-center transition-colors ${
                   playingIndex === i
-                    ? 'bg-cyan-600 text-white'
-                    : 'bg-cyan-500 text-white hover:bg-cyan-600'
+                    ? 'bg-blue-600 text-white'
+                    : 'bg-blue-500 text-white hover:bg-blue-600'
                 }`}
                 title="Ouvir frase"
               >

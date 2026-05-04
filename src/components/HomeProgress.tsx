@@ -33,11 +33,11 @@ export default function HomeProgress() {
             ? 'Todas as lições concluídas!'
             : `${done} de ${total} lições concluídas`}
         </span>
-        <span className="font-bold text-cyan-600 dark:text-cyan-400">{percent}%</span>
+        <span className="font-bold text-blue-600 dark:text-blue-400">{percent}%</span>
       </div>
       <div className="h-2 bg-slate-200 dark:bg-slate-700 rounded-full overflow-hidden">
         <div
-          className="h-full bg-cyan-500 rounded-full transition-all duration-700"
+          className="h-full bg-blue-500 rounded-full transition-all duration-700"
           style={{ width: `${percent}%` }}
         />
       </div>

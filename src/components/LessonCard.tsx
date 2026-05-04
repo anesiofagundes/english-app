@@ -26,7 +26,7 @@ export default function LessonCard({ text }: Props) {
     <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 p-5 flex flex-col gap-4 hover:shadow-md hover:-translate-y-0.5 transition-all duration-200">
       <div className="flex items-start justify-between gap-3">
         <div className="flex items-center gap-3">
-          <span className="flex-shrink-0 w-9 h-9 rounded-full bg-cyan-500 text-white flex items-center justify-center font-bold text-sm">
+          <span className="flex-shrink-0 w-9 h-9 rounded-full bg-blue-500 text-white flex items-center justify-center font-bold text-sm">
             {text.id}
           </span>
           <div>
@@ -52,7 +52,7 @@ export default function LessonCard({ text }: Props) {
         </div>
         <div className="h-1.5 bg-slate-100 dark:bg-slate-700 rounded-full overflow-hidden">
           <div
-            className="h-full bg-cyan-500 rounded-full transition-all duration-500"
+            className="h-full bg-blue-500 rounded-full transition-all duration-500"
             style={{ width: `${percent}%` }}
           />
         </div>
@@ -60,7 +60,7 @@ export default function LessonCard({ text }: Props) {
 
       <Link
         href={`/lesson/${text.id}`}
-        className="w-full py-2.5 rounded-xl text-center text-sm font-semibold transition-colors bg-cyan-500 text-white hover:bg-cyan-600"
+        className="w-full py-2.5 rounded-xl text-center text-sm font-semibold transition-colors bg-blue-500 text-white hover:bg-blue-600"
       >
         {done ? 'Revisar' : completed > 0 ? 'Continuar' : 'Estudar'}
       </Link>
