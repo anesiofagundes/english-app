@@ -37,11 +37,21 @@ export default function LineByLine({ sentences, completed, onToggle }: Props) {
   const { speak, voices } = useSpeech();
   const [playingIndex, setPlayingIndex] = useState(-1);
   const [openNote, setOpenNote] = useState<number | null>(null);
+  const [revealedTranslations, setRevealedTranslations] = useState<Set<number>>(new Set());
 
   const handlePlay = (sentence: Sentence, index: number) => {
     const voice = voices.find((v) => v.lang === 'en-US') ?? voices[0];
     setPlayingIndex(index);
     speak(sentence.english, voice, 1, () => setPlayingIndex(-1));
+  };
+
+  const toggleTranslation = (index: number) => {
+    setRevealedTranslations((prev) => {
+      const next = new Set(prev);
+      if (next.has(index)) next.delete(index);
+      else next.add(index);
+      return next;
+    });
   };
 
   return (
@@ -72,9 +82,28 @@ export default function LineByLine({ sentences, completed, onToggle }: Props) {
                   )
                 )}
               </p>
-              <p className="text-sm text-slate-500 dark:text-slate-400 leading-relaxed">
-                {sentence.portuguese}
-              </p>
+              <button
+                onClick={() => toggleTranslation(i)}
+                className="flex items-center gap-1 mt-1 text-xs font-medium text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 transition-colors"
+              >
+                {revealedTranslations.has(i) ? (
+                  <svg className="w-3.5 h-3.5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M17.94 17.94A10.07 10.07 0 0112 20c-7 0-11-8-11-8a18.45 18.45 0 015.06-5.94M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a18.5 18.5 0 01-2.16 3.19m-6.72-1.07a3 3 0 11-4.24-4.24" />
+                    <line x1="1" y1="1" x2="23" y2="23" />
+                  </svg>
+                ) : (
+                  <svg className="w-3.5 h-3.5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                    <circle cx="12" cy="12" r="3" />
+                  </svg>
+                )}
+                {revealedTranslations.has(i) ? 'Ocultar tradução' : 'Mostrar tradução'}
+              </button>
+              {revealedTranslations.has(i) && (
+                <p className="text-sm text-slate-500 dark:text-slate-400 leading-relaxed">
+                  {sentence.portuguese}
+                </p>
+              )}
               {sentence.note && (
                 <button
                   onClick={() => setOpenNote(openNote === i ? null : i)}
