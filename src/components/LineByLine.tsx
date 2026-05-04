@@ -34,15 +34,19 @@ function highlight(text: string, keyPhrases: string[]) {
 }
 
 export default function LineByLine({ sentences, completed, onToggle }: Props) {
-  const { speak, voices } = useSpeech();
+  const { speak, voices, paused, pause, resume } = useSpeech();
   const [playingIndex, setPlayingIndex] = useState(-1);
   const [openNote, setOpenNote] = useState<number | null>(null);
   const [revealedTranslations, setRevealedTranslations] = useState<Set<number>>(new Set());
 
   const handlePlay = (sentence: Sentence, index: number) => {
+    if (playingIndex === index && !paused) { pause(); return; }
+    if (playingIndex === index && paused) { resume(); return; }
     const voice = voices.find((v) => v.lang === 'en-US') ?? voices[0];
     setPlayingIndex(index);
-    speak(sentence.english, voice, 1, () => setPlayingIndex(-1));
+    speak(sentence.english, voice, 1, () => {
+      setPlayingIndex((cur) => (cur === index ? -1 : cur));
+    });
   };
 
   const toggleTranslation = (index: number) => {
@@ -133,7 +137,7 @@ export default function LineByLine({ sentences, completed, onToggle }: Props) {
                 }`}
                 title="Ouvir frase"
               >
-                {playingIndex === i ? (
+                {playingIndex === i && !paused ? (
                   <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
                     <rect x="6" y="4" width="4" height="16" rx="1" />
                     <rect x="14" y="4" width="4" height="16" rx="1" />
