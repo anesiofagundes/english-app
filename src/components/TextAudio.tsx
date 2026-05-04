@@ -2,23 +2,51 @@
 
 import { Sentence } from '@/types';
 import { useSpeech } from '@/hooks/useSpeech';
-import { useState } from 'react';
+import React, { useState } from 'react';
 
 interface Props {
   sentences: Sentence[];
   hideText?: boolean;
   showCounter?: boolean;
   targetReps?: number;
+  onTargetReached?: () => void;
 }
 
 const SPEEDS = [0.75, 1, 1.25] as const;
 
-export default function TextAudio({ sentences, hideText = false, showCounter = false, targetReps = 5 }: Props) {
-  const { voices, speaking, paused, speakSequence, stop, pause, resume } = useSpeech();
+function renderWords(text: string, activeCharIndex: number) {
+  const words = [...text.matchAll(/\S+/g)].map((m) => ({
+    word: m[0],
+    start: m.index!,
+    end: m.index! + m[0].length,
+  }));
+  const nodes: React.ReactNode[] = [];
+  let lastEnd = 0;
+  for (let j = 0; j < words.length; j++) {
+    const { word, start, end } = words[j];
+    if (start > lastEnd) nodes.push(text.slice(lastEnd, start));
+    const active = activeCharIndex >= start && activeCharIndex < end;
+    nodes.push(
+      <span key={j} className={active ? 'font-bold' : ''}>
+        {word}
+      </span>
+    );
+    lastEnd = end;
+  }
+  if (lastEnd < text.length) nodes.push(text.slice(lastEnd));
+  return nodes;
+}
+
+export default function TextAudio({ sentences, hideText = false, showCounter = false, targetReps = 5, onTargetReached }: Props) {
+  const { voices, speaking, paused, charIndex, speakSequence, stop, pause, resume } = useSpeech();
   const [selectedVoice, setSelectedVoice] = useState<SpeechSynthesisVoice | undefined>();
   const [rate, setRate] = useState<number>(1);
   const [activeSentence, setActiveSentence] = useState(-1);
   const [reps, setReps] = useState(0);
+
+  React.useEffect(() => {
+    if (showCounter && reps === targetReps) onTargetReached?.();
+  }, [reps]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const handlePlay = () => {
     const voice = selectedVoice ?? voices.find((v) => v.lang === 'en-US') ?? voices[0];
@@ -46,7 +74,7 @@ export default function TextAudio({ sentences, hideText = false, showCounter = f
         <div className="space-y-1.5">
           <label className="text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wide">Narrador</label>
           <select
-            className="w-full max-w-xs text-sm border border-slate-200 dark:border-slate-600 rounded-lg px-3 py-2 bg-white dark:bg-slate-700 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-cyan-400"
+            className="w-full max-w-xs text-sm border border-slate-200 dark:border-slate-600 rounded-lg px-3 py-2 bg-white dark:bg-slate-700 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-400"
             value={selectedVoice?.name ?? ''}
             onChange={(e) => {
               const v = voices.find((v) => v.name === e.target.value);
@@ -71,8 +99,8 @@ export default function TextAudio({ sentences, hideText = false, showCounter = f
                 onClick={() => setRate(s)}
                 className={`px-4 py-2.5 rounded-lg text-sm font-medium transition-colors ${
                   rate === s
-                    ? 'bg-cyan-500 text-white'
-                    : 'bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 text-slate-600 dark:text-slate-300 hover:border-cyan-400'
+                    ? 'bg-blue-500 text-white'
+                    : 'bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 text-slate-600 dark:text-slate-300 hover:border-blue-400'
                 }`}
               >
                 {s}x
@@ -85,7 +113,7 @@ export default function TextAudio({ sentences, hideText = false, showCounter = f
           {!speaking ? (
             <button
               onClick={handlePlay}
-              className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-cyan-500 text-white text-sm font-semibold hover:bg-cyan-600 transition-colors"
+              className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-blue-500 text-white text-sm font-semibold hover:bg-blue-600 transition-colors"
             >
               <svg className="w-4 h-4 ml-0.5" fill="currentColor" viewBox="0 0 24 24">
                 <path d="M8 5v14l11-7z" />
@@ -106,7 +134,7 @@ export default function TextAudio({ sentences, hideText = false, showCounter = f
           ) : (
             <button
               onClick={resume}
-              className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-cyan-500 text-white text-sm font-semibold hover:bg-cyan-600 transition-colors"
+              className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-blue-500 text-white text-sm font-semibold hover:bg-blue-600 transition-colors"
             >
               <svg className="w-4 h-4 ml-0.5" fill="currentColor" viewBox="0 0 24 24">
                 <path d="M8 5v14l11-7z" />
@@ -140,7 +168,7 @@ export default function TextAudio({ sentences, hideText = false, showCounter = f
                 <div
                   key={i}
                   className={`w-3 h-3 rounded-full transition-colors ${
-                    i < reps ? 'bg-cyan-500' : 'bg-slate-200 dark:bg-slate-600'
+                    i < reps ? 'bg-blue-500' : 'bg-slate-200 dark:bg-slate-600'
                   }`}
                 />
               ))}
@@ -160,11 +188,11 @@ export default function TextAudio({ sentences, hideText = false, showCounter = f
               key={i}
               className={`text-sm leading-relaxed px-3 py-2 rounded-lg transition-colors ${
                 activeSentence === i
-                  ? 'bg-cyan-50 dark:bg-cyan-900/30 text-cyan-800 dark:text-cyan-300 font-medium'
+                  ? 'bg-blue-50 dark:bg-blue-900/30 text-blue-800 dark:text-blue-300 font-medium'
                   : 'text-slate-700 dark:text-slate-300'
               }`}
             >
-              {s.english}
+              {activeSentence === i ? renderWords(s.english, charIndex) : s.english}
             </p>
           ))}
         </div>
