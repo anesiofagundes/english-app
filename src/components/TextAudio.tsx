@@ -177,6 +177,14 @@ export default function TextAudio({ sentences, hideText = false, showCounter = f
             {reps >= targetReps && (
               <span className="text-xs font-bold text-green-500 dark:text-green-400 ml-1">Ótimo!</span>
             )}
+            {process.env.NODE_ENV === 'development' && reps < targetReps && (
+              <button
+                onClick={() => setReps(targetReps)}
+                className="ml-2 text-xs text-slate-400 underline hover:text-slate-300"
+              >
+                [dev] pular
+              </button>
+            )}
           </div>
         )}
       </div>

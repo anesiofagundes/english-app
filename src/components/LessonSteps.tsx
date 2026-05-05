@@ -23,13 +23,13 @@ const STEPS = [
     number: 3,
     label: 'Texto',
     title: 'Texto completo',
-    instruction: 'Leia enquanto ouve o texto. Repita de 5 a 10 vezes.',
+    instruction: 'Leia enquanto ouve o texto. Repita 5 vezes o processo.',
   },
   {
     number: 4,
     label: 'Áudio',
     title: 'Só o áudio',
-    instruction: 'Feche os olhos e ouça sem ler. Repita de 5 a 10 vezes.',
+    instruction: 'Feche os olhos e ouça sem ler. Repita 5 vezes o processo.',
   },
 ];
 

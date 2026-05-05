@@ -1,25 +1,14 @@
 import Image from 'next/image';
 import Link from 'next/link';
-import ThemeToggle from '@/components/ThemeToggle';
 
 export default function Landing() {
   return (
     <main className="min-h-screen flex flex-col bg-gradient-to-br from-blue-50 via-white to-slate-100 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900">
-      <div className="flex justify-end p-4">
-        <ThemeToggle />
-      </div>
-
-      <div className="flex-1 flex flex-col items-center justify-center px-6 text-center">
+<div className="flex-1 flex flex-col items-center justify-center px-6 text-center">
         <div className="mb-8">
           <div className="mb-6">
-            <Image
-              src="/logo.png"
-              alt="Listenglish"
-              width={200}
-              height={200}
-              className="mx-auto"
-              priority
-            />
+            <Image src="/logo-light.png" alt="Listenglish" width={200} height={200} className="mx-auto block dark:hidden" priority />
+            <Image src="/logo-dark.png"  alt="Listenglish" width={200} height={200} className="mx-auto hidden dark:block" priority />
           </div>
 
           <h1 className="text-3xl sm:text-4xl font-extrabold text-slate-800 dark:text-white leading-tight mb-4 max-w-sm mx-auto">

@@ -1,5 +1,6 @@
 import ThemeToggle from '@/components/ThemeToggle';
 import Link from 'next/link';
+import Image from 'next/image';
 
 export default function Config() {
   return (
@@ -7,13 +8,9 @@ export default function Config() {
       <div className="bg-gradient-to-b from-blue-50 to-slate-50 dark:from-slate-800/80 dark:to-slate-900 px-4 pt-10 pb-7">
         <div className="flex items-center justify-between gap-3">
           <div>
-            <Link href="/" className="flex items-center gap-2 mb-2 group">
-              <div className="w-8 h-8 rounded-xl bg-blue-500 flex items-center justify-center shadow-sm">
-                <span className="text-white text-sm font-bold">L</span>
-              </div>
-              <span className="text-xs font-bold text-blue-600 dark:text-blue-400 uppercase tracking-widest group-hover:text-blue-700 dark:group-hover:text-blue-300 transition-colors">
-                listenglish
-              </span>
+            <Link href="/" className="flex items-center gap-2 mb-2">
+              <Image src="/logo-light.png" alt="Listenglish" width={80} height={80} className="block dark:hidden" />
+              <Image src="/logo-dark.png"  alt="Listenglish" width={80} height={80} className="hidden dark:block" />
             </Link>
             <h1 className="text-2xl font-bold text-slate-800 dark:text-white">
               Configurações

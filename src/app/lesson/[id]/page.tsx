@@ -1,6 +1,5 @@
 import { texts } from '@/data/texts';
 import LessonView from '@/components/LessonView';
-import ThemeToggle from '@/components/ThemeToggle';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 
@@ -38,7 +37,6 @@ export default async function LessonPage({ params }: Props) {
             </div>
             <p className="text-xs text-slate-400 dark:text-slate-500 mt-0.5">{text.description}</p>
           </div>
-          <ThemeToggle />
         </div>
       </div>
 
